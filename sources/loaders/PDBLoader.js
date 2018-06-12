@@ -100,31 +100,33 @@ PDBLoader.prototype = {
 
 			for ( i = 0, l = atoms.length; i < l; i ++ ) {
 
-				var atom = atoms[ i ];
+				if(atoms && atoms.length > 2){
+					var atom = atoms[ i ];
 
-				var x = atom[ 0 ];
-				var y = atom[ 1 ];
-				var z = atom[ 2 ];
+					var x = atom[ 0 ];
+					var y = atom[ 1 ];
+					var z = atom[ 2 ];
 
-				verticesAtoms.push( x, y, z );
+					verticesAtoms.push( x, y, z );
 
-				var r = atom[ 3 ][ 0 ] / 255;
-				var g = atom[ 3 ][ 1 ] / 255;
-				var b = atom[ 3 ][ 2 ] / 255;
+					var r = atom[ 3 ][ 0 ] / 255;
+					var g = atom[ 3 ][ 1 ] / 255;
+					var b = atom[ 3 ][ 2 ] / 255;
 
-				colorsAtoms.push( r, g, b );
-
+					colorsAtoms.push( r, g, b );
+				}
 			}
 
 			// bonds
 
 			for ( i = 0, l = bonds.length; i < l; i ++ ) {
+				
+				if( bond && bonds.length > 1 ){
+					var bond = bonds[ i ];
 
-				var bond = bonds[ i ];
-
-				var start = bond[ 0 ];
-				var end = bond[ 1 ];
-
+					var start = bond[ 0 ];
+					var end = bond[ 1 ];
+				}
 				verticesBonds.push( verticesAtoms[ ( start * 3 ) + 0 ] );
 				verticesBonds.push( verticesAtoms[ ( start * 3 ) + 1 ] );
 				verticesBonds.push( verticesAtoms[ ( start * 3 ) + 2 ] );

@@ -30,7 +30,9 @@
     "url": "https://github.com/Itee/three-full/issues"
   },
   "homepage": "https://github.com/Itee/three-full#readme",
-  "dependencies": {},
+  "dependencies": {
+    "uglify-js": "^3.4.0"
+  },
   "devDependencies": {
     "del": "^3.0.0",
     "eslint-config-mdcs": "^4.2.2",
