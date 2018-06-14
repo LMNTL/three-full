@@ -10163,7 +10163,7 @@ define(['exports'], function (exports) { 'use strict';
 
   			for ( i = 0, l = atoms.length; i < l; i ++ ) {
 
-  				if(atoms && atoms.length > 2){
+  				if(atoms[i] && atoms[i].length > 2){
   					var atom = atoms[ i ];
 
   					var x = atom[ 0 ];
@@ -10184,7 +10184,7 @@ define(['exports'], function (exports) { 'use strict';
 
   			for ( i = 0, l = bonds.length; i < l; i ++ ) {
   				
-  				if( bond && bonds.length > 1 ){
+  				if( bonds[i] && bonds[i].length > 1 ){
   					var bond = bonds[ i ];
 
   					var start = bond[ 0 ];
