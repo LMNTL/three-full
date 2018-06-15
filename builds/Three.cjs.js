@@ -13037,6 +13037,184 @@ MeshNormalMaterial.prototype.copy = function ( source ) {
 
 };
 
+var UniformsUtils = {
+
+	merge: function ( uniforms ) {
+		var this$1 = this;
+
+
+		var merged = {};
+
+		for ( var u = 0; u < uniforms.length; u ++ ) {
+
+			var tmp = this$1.clone( uniforms[ u ] );
+
+			for ( var p in tmp ) {
+
+				merged[ p ] = tmp[ p ];
+
+			}
+
+		}
+
+		return merged;
+
+	},
+
+	clone: function ( uniforms_src ) {
+
+		var uniforms_dst = {};
+
+		for ( var u in uniforms_src ) {
+
+			uniforms_dst[ u ] = {};
+
+			for ( var p in uniforms_src[ u ] ) {
+
+				var parameter_src = uniforms_src[ u ][ p ];
+
+				if ( parameter_src && ( parameter_src.isColor ||
+					parameter_src.isMatrix3 || parameter_src.isMatrix4 ||
+					parameter_src.isVector2 || parameter_src.isVector3 || parameter_src.isVector4 ||
+					parameter_src.isTexture ) ) {
+
+					uniforms_dst[ u ][ p ] = parameter_src.clone();
+
+				} else if ( Array.isArray( parameter_src ) ) {
+
+					uniforms_dst[ u ][ p ] = parameter_src.slice();
+
+				} else {
+
+					uniforms_dst[ u ][ p ] = parameter_src;
+
+				}
+
+			}
+
+		}
+
+		return uniforms_dst;
+
+	}
+
+};
+
+function ShaderMaterial( parameters ) {
+
+	Material.call( this );
+
+	this.type = 'ShaderMaterial';
+
+	this.defines = {};
+	this.uniforms = {};
+
+	this.vertexShader = 'void main() {\n\tgl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );\n}';
+	this.fragmentShader = 'void main() {\n\tgl_FragColor = vec4( 1.0, 0.0, 0.0, 1.0 );\n}';
+
+	this.linewidth = 1;
+
+	this.wireframe = false;
+	this.wireframeLinewidth = 1;
+
+	this.fog = false; // set to use scene fog
+	this.lights = false; // set to use scene lights
+	this.clipping = false; // set to use user-defined clipping planes
+
+	this.skinning = false; // set to use skinning attribute streams
+	this.morphTargets = false; // set to use morph targets
+	this.morphNormals = false; // set to use morph normals
+
+	this.extensions = {
+		derivatives: false, // set to use derivatives
+		fragDepth: false, // set to use fragment depth values
+		drawBuffers: false, // set to use draw buffers
+		shaderTextureLOD: false // set to use shader texture LOD
+	};
+
+	// When rendered geometry doesn't include these attributes but the material does,
+	// use these default values in WebGL. This avoids errors when buffer data is missing.
+	this.defaultAttributeValues = {
+		'color': [ 1, 1, 1 ],
+		'uv': [ 0, 0 ],
+		'uv2': [ 0, 0 ]
+	};
+
+	this.index0AttributeName = undefined;
+	this.uniformsNeedUpdate = false;
+
+	if ( parameters !== undefined ) {
+
+		if ( parameters.attributes !== undefined ) {
+
+			console.error( 'ShaderMaterial: attributes should now be defined in BufferGeometry instead.' );
+
+		}
+
+		this.setValues( parameters );
+
+	}
+
+}
+
+ShaderMaterial.prototype = Object.create( Material.prototype );
+ShaderMaterial.prototype.constructor = ShaderMaterial;
+
+ShaderMaterial.prototype.isShaderMaterial = true;
+
+ShaderMaterial.prototype.copy = function ( source ) {
+
+	Material.prototype.copy.call( this, source );
+
+	this.fragmentShader = source.fragmentShader;
+	this.vertexShader = source.vertexShader;
+
+	this.uniforms = UniformsUtils.clone( source.uniforms );
+
+	this.defines = source.defines;
+
+	this.wireframe = source.wireframe;
+	this.wireframeLinewidth = source.wireframeLinewidth;
+
+	this.lights = source.lights;
+	this.clipping = source.clipping;
+
+	this.skinning = source.skinning;
+
+	this.morphTargets = source.morphTargets;
+	this.morphNormals = source.morphNormals;
+
+	this.extensions = source.extensions;
+
+	return this;
+
+};
+
+ShaderMaterial.prototype.toJSON = function ( meta ) {
+
+	var data = Material.prototype.toJSON.call( this, meta );
+
+	data.uniforms = this.uniforms;
+	data.vertexShader = this.vertexShader;
+	data.fragmentShader = this.fragmentShader;
+
+	return data;
+
+};
+
+function RawShaderMaterial( parameters ) {
+
+	ShaderMaterial.call( this, parameters );
+
+	this.type = 'RawShaderMaterial';
+
+}
+
+RawShaderMaterial.prototype = Object.create( ShaderMaterial.prototype );
+RawShaderMaterial.prototype.constructor = RawShaderMaterial;
+
+RawShaderMaterial.prototype.isRawShaderMaterial = true;
+
 function MeshPhongMaterial( parameters ) {
 
 	Material.call( this );
@@ -15689,69 +15867,6 @@ var ShaderChunk = {
 	shadow_vert: shadow_vert
 };
 
-var UniformsUtils = {
-
-	merge: function ( uniforms ) {
-		var this$1 = this;
-
-
-		var merged = {};
-
-		for ( var u = 0; u < uniforms.length; u ++ ) {
-
-			var tmp = this$1.clone( uniforms[ u ] );
-
-			for ( var p in tmp ) {
-
-				merged[ p ] = tmp[ p ];
-
-			}
-
-		}
-
-		return merged;
-
-	},
-
-	clone: function ( uniforms_src ) {
-
-		var uniforms_dst = {};
-
-		for ( var u in uniforms_src ) {
-
-			uniforms_dst[ u ] = {};
-
-			for ( var p in uniforms_src[ u ] ) {
-
-				var parameter_src = uniforms_src[ u ][ p ];
-
-				if ( parameter_src && ( parameter_src.isColor ||
-					parameter_src.isMatrix3 || parameter_src.isMatrix4 ||
-					parameter_src.isVector2 || parameter_src.isVector3 || parameter_src.isVector4 ||
-					parameter_src.isTexture ) ) {
-
-					uniforms_dst[ u ][ p ] = parameter_src.clone();
-
-				} else if ( Array.isArray( parameter_src ) ) {
-
-					uniforms_dst[ u ][ p ] = parameter_src.slice();
-
-				} else {
-
-					uniforms_dst[ u ][ p ] = parameter_src;
-
-				}
-
-			}
-
-		}
-
-		return uniforms_dst;
-
-	}
-
-};
-
 var UniformsLib = {
 
 	common: {
@@ -16557,108 +16672,6 @@ function PlaneBufferGeometry( width, height, widthSegments, heightSegments ) {
 
 PlaneBufferGeometry.prototype = Object.create( BufferGeometry.prototype );
 PlaneBufferGeometry.prototype.constructor = PlaneBufferGeometry;
-
-function ShaderMaterial( parameters ) {
-
-	Material.call( this );
-
-	this.type = 'ShaderMaterial';
-
-	this.defines = {};
-	this.uniforms = {};
-
-	this.vertexShader = 'void main() {\n\tgl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );\n}';
-	this.fragmentShader = 'void main() {\n\tgl_FragColor = vec4( 1.0, 0.0, 0.0, 1.0 );\n}';
-
-	this.linewidth = 1;
-
-	this.wireframe = false;
-	this.wireframeLinewidth = 1;
-
-	this.fog = false; // set to use scene fog
-	this.lights = false; // set to use scene lights
-	this.clipping = false; // set to use user-defined clipping planes
-
-	this.skinning = false; // set to use skinning attribute streams
-	this.morphTargets = false; // set to use morph targets
-	this.morphNormals = false; // set to use morph normals
-
-	this.extensions = {
-		derivatives: false, // set to use derivatives
-		fragDepth: false, // set to use fragment depth values
-		drawBuffers: false, // set to use draw buffers
-		shaderTextureLOD: false // set to use shader texture LOD
-	};
-
-	// When rendered geometry doesn't include these attributes but the material does,
-	// use these default values in WebGL. This avoids errors when buffer data is missing.
-	this.defaultAttributeValues = {
-		'color': [ 1, 1, 1 ],
-		'uv': [ 0, 0 ],
-		'uv2': [ 0, 0 ]
-	};
-
-	this.index0AttributeName = undefined;
-	this.uniformsNeedUpdate = false;
-
-	if ( parameters !== undefined ) {
-
-		if ( parameters.attributes !== undefined ) {
-
-			console.error( 'ShaderMaterial: attributes should now be defined in BufferGeometry instead.' );
-
-		}
-
-		this.setValues( parameters );
-
-	}
-
-}
-
-ShaderMaterial.prototype = Object.create( Material.prototype );
-ShaderMaterial.prototype.constructor = ShaderMaterial;
-
-ShaderMaterial.prototype.isShaderMaterial = true;
-
-ShaderMaterial.prototype.copy = function ( source ) {
-
-	Material.prototype.copy.call( this, source );
-
-	this.fragmentShader = source.fragmentShader;
-	this.vertexShader = source.vertexShader;
-
-	this.uniforms = UniformsUtils.clone( source.uniforms );
-
-	this.defines = source.defines;
-
-	this.wireframe = source.wireframe;
-	this.wireframeLinewidth = source.wireframeLinewidth;
-
-	this.lights = source.lights;
-	this.clipping = source.clipping;
-
-	this.skinning = source.skinning;
-
-	this.morphTargets = source.morphTargets;
-	this.morphNormals = source.morphNormals;
-
-	this.extensions = source.extensions;
-
-	return this;
-
-};
-
-ShaderMaterial.prototype.toJSON = function ( meta ) {
-
-	var data = Material.prototype.toJSON.call( this, meta );
-
-	data.uniforms = this.uniforms;
-	data.vertexShader = this.vertexShader;
-	data.fragmentShader = this.fragmentShader;
-
-	return data;
-
-};
 
 function WebGLBackground( renderer, state, geometries, premultipliedAlpha ) {
 
@@ -25586,6 +25599,7 @@ exports.InstancedBufferGeometry = InstancedBufferGeometry;
 exports.IcosahedronBufferGeometry = IcosahedronBufferGeometry;
 exports.BoxBufferGeometry = BoxBufferGeometry;
 exports.MeshNormalMaterial = MeshNormalMaterial;
+exports.RawShaderMaterial = RawShaderMaterial;
 exports.MeshPhongMaterial = MeshPhongMaterial;
 exports.Vector3 = Vector3;
 exports.Group = Group;

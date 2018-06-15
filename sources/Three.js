@@ -13,6 +13,7 @@ export {
 	BoxBufferGeometry
 } from './geometries/BoxGeometry.js'
 export { MeshNormalMaterial } from './materials/MeshNormalMaterial.js'
+export { RawShaderMaterial } from './materials/RawShaderMaterial.js'
 export { MeshPhongMaterial } from './materials/MeshPhongMaterial.js'
 export { Vector3 } from './math/Vector3.js'
 export { Group } from './objects/Group.js'
