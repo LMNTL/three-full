@@ -10516,68 +10516,60 @@ define(['exports'], function (exports) { 'use strict';
 
   } );
 
-  function Clock( autoStart ) {
+  function InstancedBufferAttribute( array, itemSize, meshPerAttribute ) {
 
-  	this.autoStart = ( autoStart !== undefined ) ? autoStart : true;
+  	BufferAttribute.call( this, array, itemSize );
 
-  	this.startTime = 0;
-  	this.oldTime = 0;
-  	this.elapsedTime = 0;
-
-  	this.running = false;
+  	this.meshPerAttribute = meshPerAttribute || 1;
 
   }
 
-  Object.assign( Clock.prototype, {
+  InstancedBufferAttribute.prototype = Object.assign( Object.create( BufferAttribute.prototype ), {
 
-  	start: function () {
+  	constructor: InstancedBufferAttribute,
 
-  		this.startTime = ( typeof performance === 'undefined' ? Date : performance ).now(); // see #10732
+  	isInstancedBufferAttribute: true,
 
-  		this.oldTime = this.startTime;
-  		this.elapsedTime = 0;
-  		this.running = true;
+  	copy: function ( source ) {
+
+  		BufferAttribute.prototype.copy.call( this, source );
+
+  		this.meshPerAttribute = source.meshPerAttribute;
+
+  		return this;
+
+  	}
+
+  } );
+
+  function InstancedBufferGeometry() {
+
+  	BufferGeometry.call( this );
+
+  	this.type = 'InstancedBufferGeometry';
+  	this.maxInstancedCount = undefined;
+
+  }
+
+  InstancedBufferGeometry.prototype = Object.assign( Object.create( BufferGeometry.prototype ), {
+
+  	constructor: InstancedBufferGeometry,
+
+  	isInstancedBufferGeometry: true,
+
+  	copy: function ( source ) {
+
+  		BufferGeometry.prototype.copy.call( this, source );
+
+  		this.maxInstancedCount = source.maxInstancedCount;
+
+  		return this;
 
   	},
 
-  	stop: function () {
+  	clone: function () {
 
-  		this.getElapsedTime();
-  		this.running = false;
-  		this.autoStart = false;
-
-  	},
-
-  	getElapsedTime: function () {
-
-  		this.getDelta();
-  		return this.elapsedTime;
-
-  	},
-
-  	getDelta: function () {
-
-  		var diff = 0;
-
-  		if ( this.autoStart && ! this.running ) {
-
-  			this.start();
-  			return 0;
-
-  		}
-
-  		if ( this.running ) {
-
-  			var newTime = ( typeof performance === 'undefined' ? Date : performance ).now();
-
-  			diff = ( newTime - this.oldTime ) / 1000;
-  			this.oldTime = newTime;
-
-  			this.elapsedTime += diff;
-
-  		}
-
-  		return diff;
+  		return new this.constructor().copy( this );
 
   	}
 
@@ -25585,8 +25577,8 @@ define(['exports'], function (exports) { 'use strict';
   exports.Detector = Detector;
   exports.PDBLoader = PDBLoader;
   exports.PerspectiveCamera = PerspectiveCamera;
-  exports.Clock = Clock;
-  exports.Geometry = Geometry;
+  exports.InstancedBufferAttribute = InstancedBufferAttribute;
+  exports.InstancedBufferGeometry = InstancedBufferGeometry;
   exports.IcosahedronBufferGeometry = IcosahedronBufferGeometry;
   exports.BoxBufferGeometry = BoxBufferGeometry;
   exports.MeshNormalMaterial = MeshNormalMaterial;

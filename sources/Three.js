@@ -4,8 +4,8 @@ export { OrbitControls } from './controls/OrbitControls.js'
 export { Detector } from './helpers/Detector.js'
 export { PDBLoader } from './loaders/PDBLoader.js'
 export { PerspectiveCamera } from './cameras/PerspectiveCamera.js'
-export { Clock } from './core/Clock.js'
-export { Geometry } from './core/Geometry.js'
+export { InstancedBufferAttribute } from './core/InstancedBufferAttribute.js'
+export { InstancedBufferGeometry } from './core/InstancedBufferGeometry.js'
 export {
 	IcosahedronBufferGeometry
 } from './geometries/IcosahedronGeometry.js'
