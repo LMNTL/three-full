@@ -6,7 +6,9 @@ export { PDBLoader } from './loaders/PDBLoader.js'
 export { PerspectiveCamera } from './cameras/PerspectiveCamera.js'
 export { Clock } from './core/Clock.js'
 export { Geometry } from './core/Geometry.js'
-export { InstancedBufferGeometry } from './core/InstancedBufferGeometry.js'
+export {
+	IcosahedronBufferGeometry
+} from './geometries/IcosahedronGeometry.js'
 export {
 	BoxBufferGeometry
 } from './geometries/BoxGeometry.js'
