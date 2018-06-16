@@ -25755,6 +25755,7 @@ define(['exports'], function (exports) { 'use strict';
   exports.RawShaderMaterial = RawShaderMaterial;
   exports.MeshPhongMaterial = MeshPhongMaterial;
   exports.Vector3 = Vector3;
+  exports.Vector4 = Vector4;
   exports.Group = Group;
   exports.Mesh = Mesh;
   exports.WebGLRenderer = WebGLRenderer;
