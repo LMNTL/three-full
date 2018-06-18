@@ -25612,6 +25612,7 @@ exports.OrbitControls = OrbitControls;
 exports.Detector = Detector;
 exports.PDBLoader = PDBLoader;
 exports.PerspectiveCamera = PerspectiveCamera;
+exports.BufferAttribute = BufferAttribute;
 exports.InstancedBufferAttribute = InstancedBufferAttribute;
 exports.InstancedBufferGeometry = InstancedBufferGeometry;
 exports.IcosahedronBufferGeometry = IcosahedronBufferGeometry;
