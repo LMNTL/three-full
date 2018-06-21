@@ -3119,20 +3119,13 @@ var MOUSE = { LEFT: 0, MIDDLE: 1, RIGHT: 2 };
 var CullFaceNone = 0;
 var CullFaceBack = 1;
 var CullFaceFront = 2;
-var CullFaceFrontBack = 3;
-var FrontFaceDirectionCW = 0;
-var FrontFaceDirectionCCW = 1;
-var BasicShadowMap = 0;
 var PCFShadowMap = 1;
 var PCFSoftShadowMap = 2;
 var FrontSide = 0;
 var BackSide = 1;
 var DoubleSide = 2;
 var FlatShading = 1;
-var SmoothShading = 2;
 var NoColors = 0;
-var FaceColors = 1;
-var VertexColors = 2;
 var NoBlending = 0;
 var NormalBlending = 1;
 var AdditiveBlending = 2;
@@ -3205,7 +3198,6 @@ var RGBFormat = 1022;
 var RGBAFormat = 1023;
 var LuminanceFormat = 1024;
 var LuminanceAlphaFormat = 1025;
-var RGBEFormat = RGBAFormat;
 var DepthFormat = 1026;
 var DepthStencilFormat = 1027;
 var RGB_S3TC_DXT1_Format = 33776;
@@ -3231,15 +3223,6 @@ var RGBA_ASTC_10x8_Format = 37818;
 var RGBA_ASTC_10x10_Format = 37819;
 var RGBA_ASTC_12x10_Format = 37820;
 var RGBA_ASTC_12x12_Format = 37821;
-var LoopOnce = 2200;
-var LoopRepeat = 2201;
-var LoopPingPong = 2202;
-var InterpolateDiscrete = 2300;
-var InterpolateLinear = 2301;
-var InterpolateSmooth = 2302;
-var ZeroCurvatureEnding = 2400;
-var ZeroSlopeEnding = 2401;
-var WrapAroundEnding = 2402;
 var TrianglesDrawMode = 0;
 var TriangleStripDrawMode = 1;
 var TriangleFanDrawMode = 2;
@@ -3247,7 +3230,6 @@ var LinearEncoding = 3000;
 var sRGBEncoding = 3001;
 var GammaEncoding = 3007;
 var RGBEEncoding = 3002;
-var LogLuvEncoding = 3003;
 var RGBM7Encoding = 3004;
 var RGBM16Encoding = 3005;
 var RGBDEncoding = 3006;
@@ -12995,66 +12977,6 @@ Material.prototype = Object.assign( Object.create( EventDispatcher.prototype ), 
 
 } );
 
-function MeshNormalMaterial( parameters ) {
-
-	Material.call( this );
-
-	this.type = 'MeshNormalMaterial';
-
-	this.bumpMap = null;
-	this.bumpScale = 1;
-
-	this.normalMap = null;
-	this.normalScale = new Vector2( 1, 1 );
-
-	this.displacementMap = null;
-	this.displacementScale = 1;
-	this.displacementBias = 0;
-
-	this.wireframe = false;
-	this.wireframeLinewidth = 1;
-
-	this.fog = false;
-	this.lights = false;
-
-	this.skinning = false;
-	this.morphTargets = false;
-	this.morphNormals = false;
-
-	this.setValues( parameters );
-
-}
-
-MeshNormalMaterial.prototype = Object.create( Material.prototype );
-MeshNormalMaterial.prototype.constructor = MeshNormalMaterial;
-
-MeshNormalMaterial.prototype.isMeshNormalMaterial = true;
-
-MeshNormalMaterial.prototype.copy = function ( source ) {
-
-	Material.prototype.copy.call( this, source );
-
-	this.bumpMap = source.bumpMap;
-	this.bumpScale = source.bumpScale;
-
-	this.normalMap = source.normalMap;
-	this.normalScale.copy( source.normalScale );
-
-	this.displacementMap = source.displacementMap;
-	this.displacementScale = source.displacementScale;
-	this.displacementBias = source.displacementBias;
-
-	this.wireframe = source.wireframe;
-	this.wireframeLinewidth = source.wireframeLinewidth;
-
-	this.skinning = source.skinning;
-	this.morphTargets = source.morphTargets;
-	this.morphNormals = source.morphNormals;
-
-	return this;
-
-};
-
 var UniformsUtils = {
 
 	merge: function ( uniforms ) {
@@ -13232,133 +13154,6 @@ RawShaderMaterial.prototype = Object.create( ShaderMaterial.prototype );
 RawShaderMaterial.prototype.constructor = RawShaderMaterial;
 
 RawShaderMaterial.prototype.isRawShaderMaterial = true;
-
-function MeshPhongMaterial( parameters ) {
-
-	Material.call( this );
-
-	this.type = 'MeshPhongMaterial';
-
-	this.color = new Color( 0xffffff ); // diffuse
-	this.specular = new Color( 0x111111 );
-	this.shininess = 30;
-
-	this.map = null;
-
-	this.lightMap = null;
-	this.lightMapIntensity = 1.0;
-
-	this.aoMap = null;
-	this.aoMapIntensity = 1.0;
-
-	this.emissive = new Color( 0x000000 );
-	this.emissiveIntensity = 1.0;
-	this.emissiveMap = null;
-
-	this.bumpMap = null;
-	this.bumpScale = 1;
-
-	this.normalMap = null;
-	this.normalScale = new Vector2( 1, 1 );
-
-	this.displacementMap = null;
-	this.displacementScale = 1;
-	this.displacementBias = 0;
-
-	this.specularMap = null;
-
-	this.alphaMap = null;
-
-	this.envMap = null;
-	this.combine = MultiplyOperation;
-	this.reflectivity = 1;
-	this.refractionRatio = 0.98;
-
-	this.wireframe = false;
-	this.wireframeLinewidth = 1;
-	this.wireframeLinecap = 'round';
-	this.wireframeLinejoin = 'round';
-
-	this.skinning = false;
-	this.morphTargets = false;
-	this.morphNormals = false;
-
-	this.setValues( parameters );
-
-}
-
-MeshPhongMaterial.prototype = Object.create( Material.prototype );
-MeshPhongMaterial.prototype.constructor = MeshPhongMaterial;
-
-MeshPhongMaterial.prototype.isMeshPhongMaterial = true;
-
-MeshPhongMaterial.prototype.copy = function ( source ) {
-
-	Material.prototype.copy.call( this, source );
-
-	this.color.copy( source.color );
-	this.specular.copy( source.specular );
-	this.shininess = source.shininess;
-
-	this.map = source.map;
-
-	this.lightMap = source.lightMap;
-	this.lightMapIntensity = source.lightMapIntensity;
-
-	this.aoMap = source.aoMap;
-	this.aoMapIntensity = source.aoMapIntensity;
-
-	this.emissive.copy( source.emissive );
-	this.emissiveMap = source.emissiveMap;
-	this.emissiveIntensity = source.emissiveIntensity;
-
-	this.bumpMap = source.bumpMap;
-	this.bumpScale = source.bumpScale;
-
-	this.normalMap = source.normalMap;
-	this.normalScale.copy( source.normalScale );
-
-	this.displacementMap = source.displacementMap;
-	this.displacementScale = source.displacementScale;
-	this.displacementBias = source.displacementBias;
-
-	this.specularMap = source.specularMap;
-
-	this.alphaMap = source.alphaMap;
-
-	this.envMap = source.envMap;
-	this.combine = source.combine;
-	this.reflectivity = source.reflectivity;
-	this.refractionRatio = source.refractionRatio;
-
-	this.wireframe = source.wireframe;
-	this.wireframeLinewidth = source.wireframeLinewidth;
-	this.wireframeLinecap = source.wireframeLinecap;
-	this.wireframeLinejoin = source.wireframeLinejoin;
-
-	this.skinning = source.skinning;
-	this.morphTargets = source.morphTargets;
-	this.morphNormals = source.morphNormals;
-
-	return this;
-
-};
-
-function Group() {
-
-	Object3D.call( this );
-
-	this.type = 'Group';
-
-}
-
-Group.prototype = Object.assign( Object.create( Object3D.prototype ), {
-
-	constructor: Group,
-
-	isGroup: true
-
-} );
 
 function Ray( origin, direction ) {
 
@@ -25617,151 +25412,10 @@ exports.InstancedBufferAttribute = InstancedBufferAttribute;
 exports.InstancedBufferGeometry = InstancedBufferGeometry;
 exports.IcosahedronBufferGeometry = IcosahedronBufferGeometry;
 exports.BoxBufferGeometry = BoxBufferGeometry;
-exports.REVISION = REVISION;
-exports.MOUSE = MOUSE;
-exports.CullFaceNone = CullFaceNone;
-exports.CullFaceBack = CullFaceBack;
-exports.CullFaceFront = CullFaceFront;
-exports.CullFaceFrontBack = CullFaceFrontBack;
-exports.FrontFaceDirectionCW = FrontFaceDirectionCW;
-exports.FrontFaceDirectionCCW = FrontFaceDirectionCCW;
-exports.BasicShadowMap = BasicShadowMap;
-exports.PCFShadowMap = PCFShadowMap;
-exports.PCFSoftShadowMap = PCFSoftShadowMap;
-exports.FrontSide = FrontSide;
-exports.BackSide = BackSide;
 exports.DoubleSide = DoubleSide;
-exports.FlatShading = FlatShading;
-exports.SmoothShading = SmoothShading;
-exports.NoColors = NoColors;
-exports.FaceColors = FaceColors;
-exports.VertexColors = VertexColors;
-exports.NoBlending = NoBlending;
-exports.NormalBlending = NormalBlending;
-exports.AdditiveBlending = AdditiveBlending;
-exports.SubtractiveBlending = SubtractiveBlending;
-exports.MultiplyBlending = MultiplyBlending;
-exports.CustomBlending = CustomBlending;
-exports.AddEquation = AddEquation;
-exports.SubtractEquation = SubtractEquation;
-exports.ReverseSubtractEquation = ReverseSubtractEquation;
-exports.MinEquation = MinEquation;
-exports.MaxEquation = MaxEquation;
-exports.ZeroFactor = ZeroFactor;
-exports.OneFactor = OneFactor;
-exports.SrcColorFactor = SrcColorFactor;
-exports.OneMinusSrcColorFactor = OneMinusSrcColorFactor;
-exports.SrcAlphaFactor = SrcAlphaFactor;
-exports.OneMinusSrcAlphaFactor = OneMinusSrcAlphaFactor;
-exports.DstAlphaFactor = DstAlphaFactor;
-exports.OneMinusDstAlphaFactor = OneMinusDstAlphaFactor;
-exports.DstColorFactor = DstColorFactor;
-exports.OneMinusDstColorFactor = OneMinusDstColorFactor;
-exports.SrcAlphaSaturateFactor = SrcAlphaSaturateFactor;
-exports.NeverDepth = NeverDepth;
-exports.AlwaysDepth = AlwaysDepth;
-exports.LessDepth = LessDepth;
-exports.LessEqualDepth = LessEqualDepth;
-exports.EqualDepth = EqualDepth;
-exports.GreaterEqualDepth = GreaterEqualDepth;
-exports.GreaterDepth = GreaterDepth;
-exports.NotEqualDepth = NotEqualDepth;
-exports.MultiplyOperation = MultiplyOperation;
-exports.MixOperation = MixOperation;
-exports.AddOperation = AddOperation;
-exports.NoToneMapping = NoToneMapping;
-exports.LinearToneMapping = LinearToneMapping;
-exports.ReinhardToneMapping = ReinhardToneMapping;
-exports.Uncharted2ToneMapping = Uncharted2ToneMapping;
-exports.CineonToneMapping = CineonToneMapping;
-exports.UVMapping = UVMapping;
-exports.CubeReflectionMapping = CubeReflectionMapping;
-exports.CubeRefractionMapping = CubeRefractionMapping;
-exports.EquirectangularReflectionMapping = EquirectangularReflectionMapping;
-exports.EquirectangularRefractionMapping = EquirectangularRefractionMapping;
-exports.SphericalReflectionMapping = SphericalReflectionMapping;
-exports.CubeUVReflectionMapping = CubeUVReflectionMapping;
-exports.CubeUVRefractionMapping = CubeUVRefractionMapping;
-exports.RepeatWrapping = RepeatWrapping;
-exports.ClampToEdgeWrapping = ClampToEdgeWrapping;
-exports.MirroredRepeatWrapping = MirroredRepeatWrapping;
-exports.NearestFilter = NearestFilter;
-exports.NearestMipMapNearestFilter = NearestMipMapNearestFilter;
-exports.NearestMipMapLinearFilter = NearestMipMapLinearFilter;
-exports.LinearFilter = LinearFilter;
-exports.LinearMipMapNearestFilter = LinearMipMapNearestFilter;
-exports.LinearMipMapLinearFilter = LinearMipMapLinearFilter;
-exports.UnsignedByteType = UnsignedByteType;
-exports.ByteType = ByteType;
-exports.ShortType = ShortType;
-exports.UnsignedShortType = UnsignedShortType;
-exports.IntType = IntType;
-exports.UnsignedIntType = UnsignedIntType;
-exports.FloatType = FloatType;
-exports.HalfFloatType = HalfFloatType;
-exports.UnsignedShort4444Type = UnsignedShort4444Type;
-exports.UnsignedShort5551Type = UnsignedShort5551Type;
-exports.UnsignedShort565Type = UnsignedShort565Type;
-exports.UnsignedInt248Type = UnsignedInt248Type;
-exports.AlphaFormat = AlphaFormat;
-exports.RGBFormat = RGBFormat;
-exports.RGBAFormat = RGBAFormat;
-exports.LuminanceFormat = LuminanceFormat;
-exports.LuminanceAlphaFormat = LuminanceAlphaFormat;
-exports.RGBEFormat = RGBEFormat;
-exports.DepthFormat = DepthFormat;
-exports.DepthStencilFormat = DepthStencilFormat;
-exports.RGB_S3TC_DXT1_Format = RGB_S3TC_DXT1_Format;
-exports.RGBA_S3TC_DXT1_Format = RGBA_S3TC_DXT1_Format;
-exports.RGBA_S3TC_DXT3_Format = RGBA_S3TC_DXT3_Format;
-exports.RGBA_S3TC_DXT5_Format = RGBA_S3TC_DXT5_Format;
-exports.RGB_PVRTC_4BPPV1_Format = RGB_PVRTC_4BPPV1_Format;
-exports.RGB_PVRTC_2BPPV1_Format = RGB_PVRTC_2BPPV1_Format;
-exports.RGBA_PVRTC_4BPPV1_Format = RGBA_PVRTC_4BPPV1_Format;
-exports.RGBA_PVRTC_2BPPV1_Format = RGBA_PVRTC_2BPPV1_Format;
-exports.RGB_ETC1_Format = RGB_ETC1_Format;
-exports.RGBA_ASTC_4x4_Format = RGBA_ASTC_4x4_Format;
-exports.RGBA_ASTC_5x4_Format = RGBA_ASTC_5x4_Format;
-exports.RGBA_ASTC_5x5_Format = RGBA_ASTC_5x5_Format;
-exports.RGBA_ASTC_6x5_Format = RGBA_ASTC_6x5_Format;
-exports.RGBA_ASTC_6x6_Format = RGBA_ASTC_6x6_Format;
-exports.RGBA_ASTC_8x5_Format = RGBA_ASTC_8x5_Format;
-exports.RGBA_ASTC_8x6_Format = RGBA_ASTC_8x6_Format;
-exports.RGBA_ASTC_8x8_Format = RGBA_ASTC_8x8_Format;
-exports.RGBA_ASTC_10x5_Format = RGBA_ASTC_10x5_Format;
-exports.RGBA_ASTC_10x6_Format = RGBA_ASTC_10x6_Format;
-exports.RGBA_ASTC_10x8_Format = RGBA_ASTC_10x8_Format;
-exports.RGBA_ASTC_10x10_Format = RGBA_ASTC_10x10_Format;
-exports.RGBA_ASTC_12x10_Format = RGBA_ASTC_12x10_Format;
-exports.RGBA_ASTC_12x12_Format = RGBA_ASTC_12x12_Format;
-exports.LoopOnce = LoopOnce;
-exports.LoopRepeat = LoopRepeat;
-exports.LoopPingPong = LoopPingPong;
-exports.InterpolateDiscrete = InterpolateDiscrete;
-exports.InterpolateLinear = InterpolateLinear;
-exports.InterpolateSmooth = InterpolateSmooth;
-exports.ZeroCurvatureEnding = ZeroCurvatureEnding;
-exports.ZeroSlopeEnding = ZeroSlopeEnding;
-exports.WrapAroundEnding = WrapAroundEnding;
-exports.TrianglesDrawMode = TrianglesDrawMode;
-exports.TriangleStripDrawMode = TriangleStripDrawMode;
-exports.TriangleFanDrawMode = TriangleFanDrawMode;
-exports.LinearEncoding = LinearEncoding;
-exports.sRGBEncoding = sRGBEncoding;
-exports.GammaEncoding = GammaEncoding;
-exports.RGBEEncoding = RGBEEncoding;
-exports.LogLuvEncoding = LogLuvEncoding;
-exports.RGBM7Encoding = RGBM7Encoding;
-exports.RGBM16Encoding = RGBM16Encoding;
-exports.RGBDEncoding = RGBDEncoding;
-exports.BasicDepthPacking = BasicDepthPacking;
-exports.RGBADepthPacking = RGBADepthPacking;
-exports.MeshNormalMaterial = MeshNormalMaterial;
 exports.RawShaderMaterial = RawShaderMaterial;
-exports.MeshPhongMaterial = MeshPhongMaterial;
 exports.Vector3 = Vector3;
 exports.Vector4 = Vector4;
-exports.Group = Group;
 exports.Mesh = Mesh;
 exports.WebGLRenderer = WebGLRenderer;
 exports.Scene = Scene;
